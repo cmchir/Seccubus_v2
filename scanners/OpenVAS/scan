@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # ------------------------------------------------------------------------------
-# $Id$
+# $Id: scan 402 2012-03-12 12:55:10Z frank_breedijk $
 # ------------------------------------------------------------------------------
 # This script will call the OpenVAS scanner and import the results as IVIL
 # ------------------------------------------------------------------------------
@@ -99,25 +99,85 @@ my $tempfile = "/tmp/seccubus.$$";
 my $timestamp = make_timestamp();
 print "Timestamp = $timestamp\n" if $verbose;
 
+my $scan_uuid;
+my $task_uuid;
+my $status;
+my $line;
+my $cmd;
+my $result;
+
 print "Starting scan\n" if $verbose;
-my $cmd = "$openvas_path -c $rcfile -q $server $port $user '$password' $hosts_file $tempfile.nbe -x";
+#my $cmd = "$openvas_path -c $rcfile -q $server $port $user '$password' $hosts_file $tempfile.nbe -x";
+#my $cmd = "$openvas_path -c $rcfile $server $port $user '$password' $hosts_file $tempfile.nbe ";
+$cmd = "$openvas_path -h $server -p $port -u $user -w '$password' -G";
 print "Execuing $cmd\n" unless $quiet;
-my $result = `$cmd 2>&1`;
+$result = `$cmd`;
+print "Results: $result\n" if $verbose;
+($task_uuid, $status) = $result =~ /(\S+)  (\S+).*$scan/;
+print "Task UUID: $task_uuid  Status: $status\n" if $verbose;
+
+$cmd = "$openvas_path -h $server -p $port -u $user -w '$password' -S $task_uuid";
+print "Execuing $cmd\n" unless $quiet;
+$result = `$cmd 2>&1`;
+print "Results: $result\n" if $verbose;
+($scan_uuid) = $result =~ /(\S+)/;
+if ($scan_uuid eq "Failed") {
+	undef $scan_uuid;
+}
+
+$cmd = "$openvas_path -h $server -p $port -u $user -w '$password' -G $task_uuid";
+print "Execuing $cmd\n" unless $quiet;
+$result = `$cmd`;
+print "Results: $result\n" if $verbose;
+if ($scan_uuid) {
+	($status) = $result =~ /  $scan_uuid  ($status)/;
+} else {
+	($scan_uuid, $status) = $result =~ /  (\S+)  ($status)/;
+}
+print "Scan UUID: $scan_uuid, Status: $status\n" if $verbose;
+
+while ($status ne "Done") {
+	sleep 60;
+	$cmd = "$openvas_path -h $server -p $port -u $user -w '$password' -G $task_uuid";
+	$result = `$cmd`;
+	($status) = $result =~ /  $scan_uuid  (\S+)/;
+	print "Scan UUID: $scan_uuid, Status: $status\n" if $verbose;
+}
 print "$result\n" if $verbose;
+
+# write NBE file
+$cmd = "$openvas_path -h $server -p $port -u $user -w '$password' -R $scan_uuid -f 9ca6fe72-1f62-11e1-9e7c-406186ea4fc5";
+$result = `$cmd`;
+open O, ">$tempfile.nbe";
+print O $result;
+close O;
+
 
 print "Scanning done, converting .nbe to html\n" unless $quiet;
-my $cmd = "$openvas_path -c $rcfile -q -i $tempfile.nbe -o $tempfile.html";
-$cmd .= " -v" if $verbose > 1;
-print "Executing $cmd\n" if $verbose;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose;
+#my $cmd = "$openvas_path -c $rcfile -q -i $tempfile.nbe -o $tempfile.html";
+#my $cmd = "$openvas_path -c $rcfile -i $tempfile.nbe -o $tempfile.html";
+#$cmd .= " -v" if $verbose > 1;
+#print "Executing $cmd\n" if $verbose;
+#my $result = `$cmd 2>&1`;
+#print "$result\n" if $verbose;
+$cmd = "$openvas_path -h $server -p $port -u $user -w '$password' -R $scan_uuid -f 6c248850-1f62-11e1-b082-406186ea4fc5";
+$result = `$cmd`;
+open O, ">$tempfile.html";
+print O $result;
+close O;
 
 print "Converting .nbe to xml\n" unless $quiet;
-my $cmd = "$openvas_path -c $rcfile -q -i $tempfile.nbe -o $tempfile.xml";
-$cmd .= " -v" if $verbose > 1;
-print "Executing $cmd\n" if $verbose;
-my $result = `$cmd 2>&1`;
-print "$result\n" if $verbose;
+#my $cmd = "$openvas_path -c $rcfile -q -i $tempfile.nbe -o $tempfile.xml";
+#my $cmd = "$openvas_path -c $rcfile -i $tempfile.nbe -o $tempfile.xml";
+#$cmd .= " -v" if $verbose > 1;
+#print "Executing $cmd\n" if $verbose;
+#my $result = `$cmd 2>&1`;
+#print "$result\n" if $verbose;
+$cmd = "$openvas_path -h $server -p $port -u $user -w '$password' -R $scan_uuid -f a994b278-1f62-11e1-96ac-406186ea4fc5";
+$result = `$cmd`;
+open O, ">$tempfile.xml";
+print O $result;
+close O;
 
 print "Converting .nbe to IVIL\n" unless $quiet;
 $cmd = "perl -I$config->{paths}->{modules} $config->{paths}->{bindir}\/nbe2ivil --scanner=OpenVAS --workspace '$workspace' --scan '$scan' --timestamp=$timestamp --infile=$tempfile.nbe";
@@ -135,7 +195,7 @@ print "$result\n" if $verbose > 1;
 
 print "Scan imported, adding files to scan $scan in workspace $workspace\n" unless $quiet;
 
-$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nbe' --description 'BNE output'";
+$cmd = "$attach_file --workspace '$workspace' --scan '$scan' --timestamp $timestamp --file '$tempfile.nbe' --description 'NBE output'";
 $cmd .= " -v" if $verbose > 1;
 print "Execuing $cmd\n" if $verbose > 1;
 my $result = `$cmd 2>&1`;
@@ -160,10 +220,10 @@ my $result = `$cmd 2>&1`;
 print "$result\n" if $verbose > 1;
 
 # Cleanup
-unlink "$tempfile.nbe" if -e "$tempfile.nbe";
-unlink "$tempfile.html" if -e "$tempfile.html";
-unlink "$tempfile.xml" if -e "$tempfile.xml";
-unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
+#unlink "$tempfile.nbe" if -e "$tempfile.nbe";
+#unlink "$tempfile.html" if -e "$tempfile.html";
+#unlink "$tempfile.xml" if -e "$tempfile.xml";
+#unlink "$tempfile.ivil.xml" if -e "$tempfile.ivil.xml";
 
 exit(0);
 
@@ -195,12 +255,12 @@ Arguments:
 }
 
 sub get_openvas_path() {
-	my $path = `which OpenVAS-Client`;
-	if ( $path =~ /(^\/.*OpenVAS-Client)/ ) {
+	my $path = `which openvas-cli`;
+	if ( $path =~ /(^\/.*openvas-cli)/ ) {
 		return $1;
 	}
-	if ( -e '/opt/openvas/bin/OpenVAS-Client' ) {
-		return '/opt/openvas/bin/OpenVAS-Client';
+	if ( -e '/usr/bin/openvas-cli' ) {
+		return '/usr/bin/openvas-cli';
 	}
 	return undef;
 }
