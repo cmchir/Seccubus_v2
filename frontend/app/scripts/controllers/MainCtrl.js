@@ -16,8 +16,12 @@ define([
 		'$state',
 		'Workspaces',
 		function($scope, $rootScope, $state, Workspaces) {
-			$scope.currentPage = $state.current.name.split('.')[1];
 			$scope.workspaces = Workspaces.query();
+			
+			$rootScope.page = {
+				key: $state.current.name.split('.')[1],
+				name: ''
+			};
 
 			if (ng.isDefined($state.params.workspace)) {
 				$rootScope.activeWorkspace = Workspaces.get($state.params.workspace);
