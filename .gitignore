@@ -1,16 +1,12 @@
 # Databases
 *.sqlite
-
 # Mac Stuff
 *.DS_Store
-
 # Temp files
 .*.swp
 tmp/
-
 # Config
 etc/config.xml
-
 # Temporary files used for building
 errors.txt
 Makefile
@@ -31,3 +27,4 @@ junit_output.xml
 etc/config.xml
 logs
 jmvc/testresults.xml
+frontend/.editorconfig
