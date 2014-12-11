@@ -1,5 +1,9 @@
 define([
 	'./_module',
-	'./Main',
-	'./Status'
+	'./MainCtrl',
+	'./StatusCtrl',
+	'./FindingsCtrl',
+	'./RunsCtrl',
+	'./ScansCtrl',
+	'./WorkspacesCtrl'
 ], function() {});

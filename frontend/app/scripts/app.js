@@ -11,8 +11,17 @@ define([
     './resources/_all',
     './controllers/_all',
 
+    'connect-material/menu/menu',
+    'connect-material/drawer/drawer',
+    'connect-material/textfield/textfield',
+    'connect-material/searchfield/searchfield',
+    'connect-material/select/select',
+    'connect-material/checkbox/checkbox',
+    'connect-material/dialog/dialog',
+    'connect-material/pickers/pickers',
+    'connect-material/tabs/tabs',
+    'connect-material/gridlist/gridlist',
     'connect-material/sidenav/sidenav',
-    'connect-material/select/select'
 ], function(ng, domReady) {
     'use strict';
 
@@ -42,7 +51,7 @@ define([
 
             $stateProvider
             .state('seccubus', {
-                url: '/?workspace',
+                url: '/',
                 templateUrl: '/views/main.html',
                 controller: 'MainCtrl'
             })

@@ -10,13 +10,10 @@ define([
 	 * # MainCtrl
 	 * Controller of seccubus
 	 */
-	module.controller('StatusCtrl', [
+	module.controller('ScansCtrl', [
 		'$scope',
-		'Version',
-		'ConfigTests',
 		function($scope, Version, ConfigTests) {
-			$scope.versionTest = Version.get();
-			$scope.configTests = ConfigTests.query();
+			$scope.page.name = 'Manage Scans';
 		}
 	]);
 });
