@@ -5,5 +5,7 @@ define([
 	'./FindingsCtrl',
 	'./RunsCtrl',
 	'./ScansCtrl',
-	'./WorkspacesCtrl'
+	'./WorkspacesCtrl',
+	'./GroupsCtrl',
+	'./UsersCtrl'
 ], function() {});

@@ -15,14 +15,12 @@ define([
 		'$state',
 		'Version',
 		'ConfigTests',
-		'Login',
-		function($scope, $state, Version, ConfigTests, Login) {
+		function($scope, $state,  Version, ConfigTests) {
 			$scope.page.name = 'Status';
 
 			$scope.versionTest = Version.get();
 			$scope.configTests = ConfigTests.query();
-			$scope.login = Login.get();
-			$state.login = $scope.login;
+			$scope.login = $state.login;
 		}
 	]);
 });

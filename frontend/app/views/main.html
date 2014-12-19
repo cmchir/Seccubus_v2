@@ -7,6 +7,8 @@
 		<material-divider ng-show="state.login.isadmin"></material-divider>
 		<material-item ng-show="state.login.isadmin" page="workspaces" ui-sref="seccubus.workspaces">Manage Workspaces</material-item>
 		<material-item ng-show="state.login.isadmin" page="scans" ui-sref="seccubus.scans">Manage Scans</material-item>
+		<material-item ng-show="state.login.isadmin" page="users" ui-sref="seccubus.users">Manage Users</material-item>
+		<material-item ng-show="state.login.isadmin" page="groups" ui-sref="seccubus.groups">Manage Groups</material-item>
 	</material-sidenav-button>
 
 	<material-title>{{page.name}}</material-title>

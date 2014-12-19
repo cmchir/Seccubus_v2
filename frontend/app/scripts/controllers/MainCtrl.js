@@ -15,7 +15,8 @@ define([
 		'$rootScope',
 		'$state',
 		'Workspaces',
-		function($scope, $rootScope, $state, Workspaces) {
+		'Login',
+		function($scope, $rootScope, $state, Workspaces, Login) {
 			$scope.workspaces = Workspaces.query();
 			$scope.state = $state;
 			
@@ -27,6 +28,8 @@ define([
 			if (ng.isDefined($state.params.workspace)) {
 				$rootScope.activeWorkspace = Workspaces.get($state.params.workspace);
 			}
+			
+			$state.login = Login.get();
 		}
 	]);
 });

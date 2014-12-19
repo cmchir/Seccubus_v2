@@ -79,6 +79,16 @@ define([
                 url: 'scans/',
                 templateUrl: '/views/scans.html',
                 controller: 'ScansCtrl'
+            })
+            .state('seccubus.users', {
+                url: 'users/',
+                templateUrl: '/views/users.html',
+                controller: 'UsersCtrl'
+            })
+            .state('seccubus.groups', {
+                url: 'groups/',
+                templateUrl: '/views/groups.html',
+                controller: 'GroupsCtrl'
             });
         }
     ]);
