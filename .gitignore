@@ -28,3 +28,4 @@ etc/config.xml
 logs
 jmvc/testresults.xml
 frontend/.editorconfig
+frontend/npm-debug.log

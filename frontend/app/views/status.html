@@ -10,6 +10,20 @@
 </material-card>
 
 <material-card>
+	<material-title>Logged in as</material-title>
+	<ul class="login">
+		<li>
+			<div></div>
+			<h2>{{login.username}}</h2>
+			<p>{{login.message}}</p>
+			<p ng-show="login.isadmin">You are an administrator</p>
+			<p ng-hide="login.valid">Your useraccount is invalid, ask an administrator to add your user account</p>
+		</li>
+	</ul>
+</material-card>
+
+
+<material-card>
 	<material-title>Configuration Status</material-title>
 	<ul class="configtests">
 		<li ng-repeat="item in configTests" class="config-test result-{{item.result | lowercase}}">

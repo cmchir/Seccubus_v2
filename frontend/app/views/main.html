@@ -1,12 +1,12 @@
-<material-title class="page-title">Seccubus<h2>Automated vulnerability scanning and reporting</h2></material-title>
+<material-title class="page-title">Seccubus<h2>Easy automated vulnerability scanning and reporting - (Logged in as {{state.login.username}})</h2></material-title>
 <material-appbar>
 	<material-sidenav-button current-page="{{page.key}}">
 		<material-item page="status" ui-sref="seccubus.status">Status</material-item>
-		<material-item page="runs" ui-sref="seccubus.runs">Runs</material-item>
-		<material-item page="findings" ui-sref="seccubus.findings">Findings</material-item>
-		<material-divider></material-divider>
-		<material-item page="workspaces" ui-sref="seccubus.workspaces">Manage Workspaces</material-item>
-		<material-item page="scans" ui-sref="seccubus.scans">Manage Scans</material-item>
+		<material-item ng-show="state.login.valid" page="runs" ui-sref="seccubus.runs">Runs</material-item>
+		<material-item ng-show="state.login.valid" page="findings" ui-sref="seccubus.findings">Findings</material-item>
+		<material-divider ng-show="state.login.isadmin"></material-divider>
+		<material-item ng-show="state.login.isadmin" page="workspaces" ui-sref="seccubus.workspaces">Manage Workspaces</material-item>
+		<material-item ng-show="state.login.isadmin" page="scans" ui-sref="seccubus.scans">Manage Scans</material-item>
 	</material-sidenav-button>
 
 	<material-title>{{page.name}}</material-title>

@@ -2,5 +2,6 @@ define([
 	'./_module',
 	'./ConfigTests',
 	'./Version',
-	'./Workspaces'
+	'./Workspaces',
+	'./Login'
 ], function() {});

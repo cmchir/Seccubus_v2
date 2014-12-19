@@ -17,6 +17,7 @@ define([
 		'Workspaces',
 		function($scope, $rootScope, $state, Workspaces) {
 			$scope.workspaces = Workspaces.query();
+			$scope.state = $state;
 			
 			$rootScope.page = {
 				key: $state.current.name.split('.')[1],
