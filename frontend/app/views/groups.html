@@ -1,1 +1,13 @@
-groups
+<material-card>
+	<material-title>Groups</material-title>
+	<ul class="groupss">
+		<li ng-repeat="group in groups" class="group">
+			<div></div>
+			<h2>{{group.name}}</h2>
+			<div>Members:</div>
+			<ul>
+				<li ng-repeat="user in group.users" class="user">{{ user.username }} - {{ user.name }}
+			</ul>
+		</li>
+	</ul>
+</material-card>

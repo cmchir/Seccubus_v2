@@ -28,10 +28,11 @@ all functions within the module
 @ISA = ('Exporter');
 
 @EXPORT = qw ( 
-		get_user_id
-		add_user 
-		get_login
-	     );
+	get_user_id
+	add_user 
+	get_login
+	get_groups
+);
 
 use strict;
 use Carp;
@@ -39,6 +40,7 @@ use Carp;
 sub get_user_id($);
 sub add_user($$$);
 sub get_login();
+sub get_groups();
 
 =head1 User manipulation
 
@@ -173,7 +175,7 @@ sub get_login() {
 	if ( ! exists $ENV{REMOTE_ADDR} ) {
 		# Running from command line means logged in as admin
 		return("admin",1,1,"Running from command line as admin");
-	} elsif ( ! exists $ENV{REMOTE_USER} ) {
+	} elsif ( ! $ENV{REMOTE_USER} ) {
 		# No auth setup
 		return("admin",1,1,"Unauthenticated user acting as admin");
 	} else {
@@ -188,6 +190,82 @@ sub get_login() {
 			# Invalid user
 			return("<undef>",0,0,"Undefined user '$ENV{REMOTE_USER}'");
 		}
+	}
+}
+
+=head2 get_groups
+ 
+This function returns the groups in the system and which users are in them
+
+=over 2
+
+=item Parameters
+
+None
+
+=item Checks
+
+You must be an administrator to use this function
+
+=item Returns
+
+=over 4
+
+=item group_id
+
+=item group_name
+
+=item members - array of members in the group
+
+=back 
+
+=back 
+
+=cut 
+
+sub get_groups() {
+	if ( is_admin() ) {
+		# As administrator we are allow to do this.
+		my $groups = [];
+
+		my $data = sql ( 
+			"return"	=> "arrayref",
+		    "query"		=> "SELECT groups.id as group_id, groups.name as group_name, users.id as user_id, users.username, 
+							users.name as user_name 
+							FROM groups
+							LEFT JOIN user2group ON user2group.group_id = groups.id 
+							LEFT JOIN users ON user2group.user_id = users.id 
+							ORDER BY groups.name, users.name;",
+		);
+		my $current_group = -1;
+		my $group = undef;
+		foreach my $record ( @$data ) {
+			if ( $record->{group_id} != $current_group ) { 
+				# We have a new group here
+				$current_group = $record->{group_id};
+				push @$groups, $group if $group; # Push group to result set if we have a group
+				$group = {};
+				$group->{id} = $record->{group_id};
+				$group->{name} = $record->{group_name};
+				$group->{users} = [];
+				if ( $record->{id}  < 100 ) {
+					$group->{system} = 1;
+				} else {
+					$group->{system} = 0;
+				}
+			}
+			if ($record->{user_id}) {
+				my $user = {};
+				$user->{id} = $record->{user_id};
+				$user->{username} = $record->{username};
+				$user->{name} = $record->{user_name};
+				push @{$group->{users}}, $user;
+			}
+		}
+		push @$groups, $group if $group; # Don't push if we don't have groups
+		return $groups;
+	} else {
+		return undef;
 	}
 }
 

@@ -5,16 +5,19 @@ define([
 	'use strict';
 
 	/**
-	 * @name seccubus.controller:MainCtrl
+	 * @name seccubus.controller:Groups
 	 * @description
-	 * # MainCtrl
-	 * Controller of seccubus
+	 * # GroupsCtrl
+	 * Controller of seccubus groups
 	 */
 	module.controller('GroupsCtrl', [
 		'$scope',
 		'$state',
-		function($scope, $state) {
+		'Groups',
+		function($scope, $state, Groups) {
 			$scope.page.name = 'Manage Groups';
+
+			$scope.groups = Groups.query();
 		}
 	]);
 });

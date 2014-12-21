@@ -1,7 +1,8 @@
 define([
 	'./_module',
 	'./ConfigTests',
+	'./Groups',
+	'./Login',
 	'./Version',
-	'./Workspaces',
-	'./Login'
+	'./Workspaces'
 ], function() {});

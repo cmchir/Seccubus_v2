@@ -1,11 +1,11 @@
 define([
 	'./_module',
 	'./MainCtrl',
-	'./StatusCtrl',
 	'./FindingsCtrl',
+	'./GroupsCtrl',
 	'./RunsCtrl',
 	'./ScansCtrl',
-	'./WorkspacesCtrl',
-	'./GroupsCtrl',
-	'./UsersCtrl'
+	'./StatusCtrl',
+	'./UsersCtrl',
+	'./WorkspacesCtrl'
 ], function() {});
