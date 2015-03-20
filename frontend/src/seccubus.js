@@ -17,6 +17,7 @@ import NavBarComponent from './components/nav-bar/nav-bar';
 import NavMenuComponent from './components/nav-menu/nav-menu';
 import StatusPageComponent from './components/status-page/status-page';
 import RunsPageComponent from './components/runs-page/runs-page';
+import WorkspacesPageComponent from './components/workspaces-page/workspaces-page';
 /* MARKER: insert components import here */
 
 // Application Flux stores
@@ -60,7 +61,8 @@ class Application {
             NavBarComponent,
             NavMenuComponent,
             StatusPageComponent,
-            RunsPageComponent
+            RunsPageComponent,
+            WorkspacesPageComponent
             /* MARKER: insert components here */
         ];
     }
@@ -79,8 +81,8 @@ class Application {
             AppActions,
             StatusActions,
             RunActions,
-			WorkspaceActions
-			/* MARKER: insert actions here */
+            WorkspaceActions
+            /* MARKER: insert actions here */
         ];
     }
 }
